@@ -80,6 +80,7 @@ exports.purchaseHistory = (req, res) => {
           error: errorHandler(err),
         });
       }
+      console.log(orders);
       res.json(orders);
     });
 };

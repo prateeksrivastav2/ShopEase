@@ -18,7 +18,7 @@ import ManageProducts from './admin/ManageProducts';
 import UpdateProduct from './admin/UpdateProduct';
 import CategoryList from './admin/CategoryList';
 import NotFound from './core/NotFound';
-
+import Success from './core/Success';
 const Routes = () => {
   return (
     <BrowserRouter>
@@ -27,6 +27,7 @@ const Routes = () => {
         <Route path='/shop' component={Shop} exact />
         <Route path='/signin' component={Signin} exact />
         <Route path='/signup' component={Signup} exact />
+        <PrivateRoute path='/Success' component={Success} exact />
         <PrivateRoute path='/user/dashboard' component={Dashboard} exact />
         <AdminRoute path='/admin/dashboard' component={AdminDashboard} exact />
         <AdminRoute path='/create/category' component={AddCategory} exact />

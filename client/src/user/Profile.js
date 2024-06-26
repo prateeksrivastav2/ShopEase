@@ -12,12 +12,20 @@ const Profile = ({ match }) => {
     error: false,
     success: false,
   });
+  const styles = {
+    heading: {
+      color: '#AD88C6', 
+      textShadow: '2px 2px 5px rgba(0,0,0,0.3)', 
+      fontSize: '2.5rem', 
+      fontWeight: 'bold', 
+    }
+  };
 
   const { token } = isAuthenticated();
   const { name, email, password, success } = values;
 
   const init = (userId) => {
-    // console.log(userId);
+
     read(userId, token).then((data) => {
       if (data.error) {
         setValues({ ...values, error: true });
@@ -92,7 +100,7 @@ const Profile = ({ match }) => {
         />
       </div>
 
-      <button onClick={clickSubmit} className='btn btn-primary'>
+      <button onClick={clickSubmit} className='btn btn-info' style={{borderRadius:'5px'}}>
         Submit
       </button>
     </form>
@@ -100,11 +108,11 @@ const Profile = ({ match }) => {
 
   return (
     <Layout
-      title='Profile'
-      description='Update your profile'
+      title='Your Profile'
+      description='Update Your Account'
       className='container-fluid'
     >
-      <h2 className='mb-4'>Profile update</h2>
+      <h2 className="mb-4" style={styles.heading}>Account Details</h2>
       {profileUpdate(name, email, password)}
       {redirectUser(success)}
     </Layout>

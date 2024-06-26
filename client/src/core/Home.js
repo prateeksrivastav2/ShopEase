@@ -10,7 +10,14 @@ const Home = () => {
   const [productsBySell, setProductsBySell] = useState([]);
   const [productsByArrival, setProductsByArrival] = useState([]);
   const [error, setError] = useState([]);
-
+  const styles = {
+    heading: {
+      color: '#7469B6', 
+      textShadow: '2px 2px 5px rgba(0,0,0,0.3)', 
+      fontSize: '1.5rem', 
+      fontWeight: 'bold', 
+    }
+  };
   const loadProductsBySell = () => {
     getProducts('sold').then((data) => {
       if (data.error) {
@@ -46,7 +53,7 @@ const Home = () => {
       <div className='row'>
         <div className='col-md-1'></div>
         <div className='col-md-10'>
-          <h2 className='mb-2'>New Arrivals</h2>
+          <h2 className='mb-2' style={{ ...styles.heading, fontSize: '2.5rem'}}>New Arrivals</h2>
           <div className='row'>
             {productsByArrival.map((product, i) => (
               <div key={i} className='col-xl-4 col-lg-6 col-md-6 col-sm-12'>
@@ -55,7 +62,7 @@ const Home = () => {
             ))}
           </div>
 
-          <h2 className='mb-2 mt-4'>Best Sellers</h2>
+          <h2 className='mb-2 mt-4' style={{ ...styles.heading, fontSize: '2.5rem'}}>Best Sellers</h2>
           <div className='row'>
             {productsBySell.map((product, i) => (
               <div key={i} className='col-xl-4 col-lg-6 col-md-6 col-sm-12'>

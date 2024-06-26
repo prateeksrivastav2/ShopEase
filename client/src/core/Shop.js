@@ -21,7 +21,14 @@ const Shop = () => {
   const [skip, setSkip] = useState(0);
   const [size, setSize] = useState(0);
   const [filteredResults, setFilteredResults] = useState([]);
-
+  const styles = {
+    heading: {
+      color: '#7469B6', 
+      textShadow: '2px 2px 5px rgba(0,0,0,0.3)', 
+      fontSize: '1.5rem', 
+      fontWeight: 'bold', 
+    }
+  };
   const init = () => {
     getCategories().then((data) => {
       if (!data) {
@@ -114,22 +121,21 @@ const Shop = () => {
 
   return (
     <Layout
-      title='Shop page'
-      description='Search and find books'
+      title='Purchase Here'
+      description='Search and find Your best fit!'
       className='container-fluid'
     >
       <Search />
       <div className='row'>
         <div className='col-md-3'>
-          <h4>Filter by categories</h4>
+          <h4 style={styles.heading}>Filter by categories</h4>
           <ul>
             <Checkbox
               categories={categories}
               handleFilters={(filters) => handleFilters(filters, 'category')}
             />
           </ul>
-
-          <h4>Filter by price range</h4>
+          <h4 style={styles.heading}>Filter by price range</h4>
           <div>
             <RadioBox
               prices={prices}
@@ -139,7 +145,7 @@ const Shop = () => {
         </div>
 
         <div className='col-md-9'>
-          <h2 className='mb-2'>Products</h2>
+          <h2 className='mb-2' style={{ ...styles.heading, fontSize: '2.5rem'}} >Products</h2>
           <div className='row'>
             {filteredResults.map((product, i) => (
               <div key={i} className='col-xl-4 col-lg-6 col-md-12 col-sm-12'>

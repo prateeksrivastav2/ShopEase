@@ -9,10 +9,11 @@ const {
   getStatusValues,
   orderById,
   updateOrderStatus,
+  createCheckoutSession,
 } = require('../controllers/order');
 
 const { decreaseQuantity } = require('../controllers/product');
-
+router.post('/order/create-checkout-session/:userId', requireSignin,isAuth,createCheckoutSession);
 router.post(
   '/order/create/:userId',
   requireSignin,

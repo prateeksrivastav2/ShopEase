@@ -1,5 +1,6 @@
 const { Order, CartItem } = require('../models/order');
 const { errorHandler } = require('../helpers/dbErrorHandler');
+const stripe = require("stripe")("sk_test_51P8TDCSDhYcpKPnMNGFQvjwMaXt2m9PPEd5hwCgQ1gWe0irTRrMyBFRcHUx3lWJ0rQ80tNvkq9xe1idwuxlDap5F00hgzqZ8aG"); // Make sure to replace with your Stripe secret key
 
 exports.orderById = async (req, res, next, id) => {
   try {
@@ -47,5 +48,39 @@ exports.updateOrderStatus = async (req, res) => {
     res.json(order);
   } catch (err) {
     res.status(400).json({ error: errorHandler(err) });
+  }
+};
+
+exports.createCheckoutSession = async (req, res) => {
+  // console.log("Inside createCheckoutSession");
+  try {
+    const idd = req.params.userId;
+    const { start, end, price } = req.body;
+    // console.log(`Start: ${start}, End: ${end}, Price: ${price}`);
+    let str = `${start} to ${end}`;
+    
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: [
+        {
+          price_data: {
+            currency: "usd",
+            product_data: {
+              name: str
+            },
+            unit_amount: price * 100
+          },
+          quantity: 1,
+        }
+      ],
+      mode: 'payment',
+      success_url: `http://localhost:3000/success/`,
+      cancel_url: 'http://localhost:3000/home',
+    });
+
+    res.json({ id: session.id });
+  } catch (error) {
+    console.error('Error creating checkout session:', error.message);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 };

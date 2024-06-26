@@ -7,6 +7,7 @@ import DropIn from 'braintree-web-drop-in-react';
 import { getBraintreeClientToken, processPayment, createOrder } from './apiCore';
 import { emptyCart } from './cartHelpers';
 import './Checkout.css';
+import { loadStripe } from '@stripe/stripe-js';
 
 const Checkout = ({ products, setRun = (f) => f, run = undefined }) => {
   const [data, setData] = useState({
@@ -21,6 +22,15 @@ const Checkout = ({ products, setRun = (f) => f, run = undefined }) => {
       state: '',
       postalCode: '',
     },
+  });
+  const [Opt,setOpt]=useState(0);
+  const [saveAddress, setsaveAddress] = useState({
+    address: {
+      street: '',
+      city: '',
+      state: '',
+      postalCode: '',
+    }
   });
 
   const [Address, setAddress] = useState([]);
@@ -43,6 +53,7 @@ const Checkout = ({ products, setRun = (f) => f, run = undefined }) => {
       fetchAddressdata();  // fetch address data when component mounts
     }
   }, [userId, token]);
+  
 
 
 
@@ -54,6 +65,7 @@ const Checkout = ({ products, setRun = (f) => f, run = undefined }) => {
       address: { ...prevState.address, [field]: value },
     }));
   };
+
 
   const handleAddress = async () => {
     try {
@@ -105,15 +117,23 @@ const Checkout = ({ products, setRun = (f) => f, run = undefined }) => {
 
 
 
+  const [selectedAddressIndex, setSelectedAddressIndex] = useState(null);
   const fetchAddress = () => {
-    // Initialize an empty array to store JSX elements
     let addressElements = [];
-
-    // Define a function to handle the click event for a particular address
+  
+   
     const handleAddressClick = (index) => {
       console.log(`Address ${index + 1} clicked`);
       console.log(Address[index]);
-      setData({
+  
+      // Toggle the selected address index
+      if (selectedAddressIndex === index) {
+        setSelectedAddressIndex(null); // Deselect if already selected
+      } else {
+        setSelectedAddressIndex(index); // Select the clicked address
+      }
+  
+      setsaveAddress({
         address: {
           street: Address[index].street,
           city: Address[index].city,
@@ -122,6 +142,7 @@ const Checkout = ({ products, setRun = (f) => f, run = undefined }) => {
         }
       });
     };
+  
     const handleAddressDeleteClick = async (index) => {
       try {
         const response = await axios.post(
@@ -133,7 +154,7 @@ const Checkout = ({ products, setRun = (f) => f, run = undefined }) => {
             },
           }
         );
-    
+  
         if (response.data) {
           console.log("Address deleted successfully:", response.data);
           fetchAddressdata();
@@ -151,36 +172,46 @@ const Checkout = ({ products, setRun = (f) => f, run = undefined }) => {
         // Handle error appropriately
       }
     };
-    
-
+  
     // Iterate over each address in the Address array
     for (let index = 0; index < Address.length; index++) {
       const address = Address[index];
-
+  
       // Check if the address object exists and has keys
       if (address && Object.keys(address).length !== 0) {
         // Add JSX elements for the address to the array
         addressElements.push(
-          <div key={index} className="address-container" onClick={() => handleAddressClick(index)}>
-            <h2 style={{ fontSize: "1.25rem" }}>Address {index + 1}</h2>
-            <div className="address-card">
-              <div className="address-row">
-                <p><strong>Street:</strong> {address.street}</p>
-                <p><strong>City:</strong> {address.city}</p>
+          <div key={index} className="address-container">
+            <div onClick={() => handleAddressClick(index)} style={{ cursor: 'pointer' }}>
+              <h2 style={{ fontSize: "1.25rem" }}>Address {index + 1}</h2>
+              <div className="address-card">
+                <div className="address-row">
+                  <p><strong>Street:</strong> {address.street}</p>
+                  <p><strong>City:</strong> {address.city}</p>
+                </div>
+                <div className="address-row">
+                  <p><strong>State:</strong> {address.state}</p>
+                  <p><strong>Postal Code:</strong> {address.postalCode}</p>
+                </div>
               </div>
-              <div className="address-row">
-                <p><strong>State:</strong> {address.state}</p>
-                <p><strong>Postal Code:</strong> {address.postalCode}</p>
-              </div>
-              <div className="address-row">
+            </div>
+            <div className="address-row">
+              <button
+                className={`btn ${selectedAddressIndex === index ? 'btn-success' : 'btn-secondary'}`}
+                style={{ borderRadius: '6px' }}
+                onClick={() => handleAddressClick(index)}
+              >
+                {selectedAddressIndex === index ? 'Selected' : 'Select'}
+              </button>
+              {(
                 <div className='btn btn-danger' style={{ borderRadius: '6px' }} onClick={() => handleAddressDeleteClick(index)}>Delete</div>
-              </div>
+              )}
             </div>
           </div>
         );
       }
     }
-
+  
     // Return the array of JSX elements
     return (
       <div>
@@ -219,46 +250,90 @@ const Checkout = ({ products, setRun = (f) => f, run = undefined }) => {
     }
   };
 
+  const Showbuyoptions=()=>{
+    setOpt(1);
+  }
 
   const buy = () => {
-    setData({ ...data, loading: true });
-    let nonce;
-    data.instance.requestPaymentMethod()
-      .then((data) => {
-        nonce = data.nonce;
-        const paymentData = {
-          paymentMethodNonce: nonce,
-          amount: getTotal(products),
-        };
-
-        processPayment(userId, token, paymentData)
-          .then((response) => {
-            const createOrderData = {
-              products: products,
-              transaction_id: response.transaction.id,
-              amount: response.transaction.amount,
-              address: data.address,
-            };
-
-            createOrder(userId, token, createOrderData)
-              .then((response) => {
-                emptyCart(() => {
-                  setRun(!run);
-                  setData({ ...data, loading: false, success: true });
-                });
-              })
-              .catch((error) => {
-                setData({ ...data, loading: false, error: error.message });
-              });
-          })
-          .catch((error) => {
-            setData({ ...data, loading: false, error: error.message });
-          });
+    // Create order data
+    const createOrderData = {
+      products: products,
+      transaction_id: "dummy_transaction_id", 
+      amount: getTotal(products), 
+      address: saveAddress.address, 
+    };
+  
+    // Call createOrder function
+    createOrder(userId, token, createOrderData)
+      .then((response) => {
+        // Empty the cart after successful order creation
+        emptyCart(() => {
+          setRun(!run); // Toggle run state
+          setData({ ...data, loading: false, success: true }); // Update state
+        });
       })
       .catch((error) => {
-        setData({ ...data, error: error.message });
+        setData({ ...data, loading: false, error: error.message }); // Handle error
       });
   };
+
+
+  const onlinebuy = async () => {
+    console.log("Initiating Stripe checkout");
+    
+    const stripe = await loadStripe("pk_test_51P8TDCSDhYcpKPnMYaWVSHGofzSO3Xx2QQYrY3chzzcof9wNpSY1EWgJlMMWY7pXzp5ho3YZylwTeWU7SMDk9Ooj00c8AJpqFJ");
+  
+    const body = {
+      start: "selectedSource",
+      end: "selectedDestination",
+      price: getTotal(products),
+    };
+  
+    const headers = {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    };
+  
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/order/create-checkout-session/${userId}`,
+        {
+          method: "POST",
+          headers: headers,
+          body: JSON.stringify(body),
+        }
+      );
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      
+      const session = await response.json();
+      console.log(session.id);
+      console.log("session.id");
+      const createOrderData = {
+        products: products,
+        transaction_id: session.id, 
+        amount: getTotal(products),
+        address: saveAddress.address,
+      };
+      localStorage.setItem('createOrderData', JSON.stringify(createOrderData));
+      // console.log("Session:", session);
+      const result = await stripe.redirectToCheckout({
+        sessionId: session.id,
+      });
+      
+  
+      if (result.error) {
+        console.error(result.error.message);
+      } 
+    } catch (error) {
+      console.error('Error during Stripe checkout:', error.message);
+    }
+  };
+  
+  
 
   const showDropIn = () => (
     <div onBlur={() => setData({ ...data, error: '' })}>
@@ -330,9 +405,17 @@ const Checkout = ({ products, setRun = (f) => f, run = undefined }) => {
             }}
             onInstance={(instance) => setData((prevState) => ({ ...prevState, instance }))}
           />
-          <button onClick={buy} className='btn btn-success btn-block'>
+          <button onClick={Showbuyoptions} className='btn btn-success btn-block' style={{borderRadius:'7px'}}>
             Pay
           </button>
+          <div style={{display:"flex",justifyContent:'center'}}>
+          {Opt===1&&<button onClick={onlinebuy} className='btn btn-success btn-flex my-3 mr-3' style={{width:'17vw',borderRadius:'7px'}}>
+            Online
+          </button>}
+          {Opt===1&&<button onClick={buy} className='btn btn-success btn-flex my-3 ' style={{width:'17vw',borderRadius:'7px'}}>
+            Cash
+          </button>}
+          </div>
         </div>
       ) : null}
     </div>

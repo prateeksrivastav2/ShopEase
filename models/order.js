@@ -19,7 +19,30 @@ const OrderSchema = new mongoose.Schema(
     products: [CartItemSchema],
     transaction_id: {},
     amount: { type: Number },
-    address: String,
+    addresses: [
+      {
+        street: {
+          type: String,
+          trim: true,
+        },
+        city: {
+          type: String,
+          trim: true,
+        },
+        state: {
+          type: String,
+          trim: true,
+        },
+        postalCode: {
+          type: String,
+          trim: true,
+        },
+        country: {
+          type: String,
+          trim: true,
+        },
+      },
+    ],
     status: {
       type: String,
       default: 'Not processed',

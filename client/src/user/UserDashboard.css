@@ -1,0 +1,63 @@
+/* Style for the purchase history card */
+.card {
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Style for each list group item */
+  .purchase-history-item {
+    margin-bottom: 15px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+  }
+  
+  /* Style for the order container */
+  .order-container {
+    margin-bottom: 10px;
+  }
+  
+  /* Style for each product container */
+  .product-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 15px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Style for product details section */
+  .product-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  /* Style for product name */
+  .product-name {
+    font-weight: bold;
+  }
+  
+  /* Style for product price */
+  .product-price {
+    color: #007bff;
+  }
+  
+  /* Style for purchase date */
+  .purchase-date {
+    font-style: italic;
+    color: #6c757d;
+  }
+  
+  /* Style for product info section */
+  .product-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  
