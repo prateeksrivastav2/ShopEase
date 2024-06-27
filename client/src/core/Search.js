@@ -16,14 +16,15 @@ import Card from './Card';
 const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(1),
-    minWidth: 120,
+    minWidth: 90,
   },
   selectEmpty: {
     marginTop: theme.spacing(2),
   },
   tField: {
-    width: 800,
+    width: 600,
     marginTop: 2,
+    height:3
   },
   root: {
     '& > *': {

@@ -33,6 +33,16 @@ const useStyles = makeStyles((theme) => ({
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
+    transition: 'box-shadow 0.3s ease-in-out', // Add transition for smooth effect
+    '&:hover': {
+      boxShadow: '0px 4px 20px rgba(0, 0.3, 0.3, 0.3)', // Add shadow on hover
+    },
+  },
+  textField: {
+    transition: 'box-shadow 0.3s ease-in-out',
+    '&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
+      boxShadow: '0px 4px 20px rgba(0, 0.3, 0.3, 0.3)', // Add shadow on hover
+    },
   },
 }));
 
@@ -43,7 +53,7 @@ export default function Signup() {
     password: '',
     error: '',
     success: false,
-    role:''
+    role: ''
   });
 
   const { name, email, password, success, error, role } = values;
@@ -56,7 +66,7 @@ export default function Signup() {
     event.preventDefault(); // so that browser does not reload
     console.log(role);
     setValues({ ...values, error: false });
-    signup({ name, email, password,role }).then((data) => {
+    signup({ name, email, password, role }).then((data) => {
       if (data.error) {
         setValues({ ...values, error: data.error, success: false });
       } else {
@@ -119,6 +129,7 @@ export default function Signup() {
                 id='name'
                 label='Full Name'
                 autoFocus
+                classes={{ root: classes.textField }}
               />
             </Grid>
             <Grid item xs={12}>
@@ -133,6 +144,7 @@ export default function Signup() {
                 type='email'
                 value={email}
                 autoComplete='off'
+                classes={{ root: classes.textField }}
               />
             </Grid>
             <Grid item xs={12}>
@@ -147,6 +159,7 @@ export default function Signup() {
                 onChange={handleChange('password')}
                 value={password}
                 autoComplete='current-password'
+                classes={{ root: classes.textField }}
               />
             </Grid>
             <Grid item xs={12}>
@@ -161,6 +174,7 @@ export default function Signup() {
                 onChange={handleChange('role')}
                 value={role}
                 autoComplete='current-password'
+                classes={{ root: classes.textField }}
               />
             </Grid>
           </Grid>
@@ -174,13 +188,13 @@ export default function Signup() {
           >
             Sign Up
           </Button>
-          <Grid container justify='flex-end'>
+          <div style={{display:'flex',justifyContent:'center'}}>
             <Grid item>
               <Link to='/signin' variant='body2'>
                 Already have an account? Sign in
               </Link>
             </Grid>
-          </Grid>
+          </div>
         </form>
       </div>
     </Container>
@@ -188,8 +202,8 @@ export default function Signup() {
 
   return (
     <Layout
-      title='Signup page'
-      description='Signup to MERN E-commerce App'
+      title='Welcome To ShopEase'
+      description='Create Your Account'
       className='container col-md-8 offset-md-2'
     >
       {signUpForm()}

@@ -1,5 +1,5 @@
-import React, { Fragment } from 'react';
-import { Link, withRouter, forceUpdate } from 'react-router-dom';
+import React, { Fragment, useEffect, useState } from 'react';
+import { Link, withRouter } from 'react-router-dom';
 import { signout, isAuthenticated } from '../auth';
 import { itemTotal } from './cartHelpers';
 
@@ -74,7 +74,6 @@ const useStyles = makeStyles((theme) => ({
   },
   inputInput: {
     padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
     transition: theme.transitions.create('width'),
     width: '100%',
@@ -98,8 +97,22 @@ const useStyles = makeStyles((theme) => ({
 
 const MaterialAppBar = ({ history }) => {
   const classes = useStyles();
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
+  const [role, setRole] = useState(2);
+  const [role2, setRole2] = useState(2);
+
+  useEffect(() => {
+    const auth = isAuthenticated();
+    // console.log('Authentication:', auth); // Check what isAuthenticated() returns
+    if (auth) {
+      const { role, role2 } = auth;
+      // console.log('Role:', role, 'Role2:', role2); // Check role and role2 values
+      setRole(role);
+      setRole2(role2);
+    }
+  }, []);
+  
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -167,18 +180,20 @@ const MaterialAppBar = ({ history }) => {
           </Link>
         </MenuItem>
 
-        <MenuItem>
-          <Link style={isActive(history, '/cart')} to='/cart'>
-            <IconButton aria-label='Cart' color='inherit'>
-              <Badge badgeContent={itemTotal()} color='secondary'>
-                <ShoppingCartIcon />
-              </Badge>
-            </IconButton>
-            Cart
-          </Link>
-        </MenuItem>
+        {isAuthenticated() && role === 0 && role2 === 0 && (
+          <MenuItem>
+            <Link style={isActive(history, '/cart')} to='/cart'>
+              <IconButton aria-label='Cart' color='inherit'>
+                <Badge badgeContent={itemTotal()} color='secondary'>
+                  <ShoppingCartIcon />
+                </Badge>
+                Cart
+              </IconButton>
+            </Link>
+          </MenuItem>
+        )}
 
-        {isAuthenticated() && isAuthenticated().user.role === 0 && (
+        {isAuthenticated() && isAuthenticated().user && isAuthenticated().user.role === 0  && (
           <MenuItem>
             <Link
               style={isActive(history, '/user/dashboard')}
@@ -186,13 +201,14 @@ const MaterialAppBar = ({ history }) => {
             >
               <IconButton aria-label='Dashboard' color='inherit'>
                 <DashboardIcon />
-              </IconButton>
-              Dashboard
-            </Link>
-          </MenuItem>
+                </IconButton>
+                Dashboard
+              </Link>
+            </MenuItem>
         )}
+        
 
-        {isAuthenticated() && isAuthenticated().user.role === 1 && (
+        {isAuthenticated() && isAuthenticated().user && isAuthenticated().user.role === 1 && (
           <MenuItem>
             <Link
               style={isActive(history, '/admin/dashboard')}
@@ -200,10 +216,10 @@ const MaterialAppBar = ({ history }) => {
             >
               <IconButton aria-label='Dashboard' color='inherit'>
                 <DashboardIcon />
-              </IconButton>
-              Dashboard
-            </Link>
-          </MenuItem>
+                </IconButton>
+                Dashboard
+              </Link>
+            </MenuItem>
         )}
 
         {!isAuthenticated() && (
@@ -265,7 +281,7 @@ const MaterialAppBar = ({ history }) => {
           </a>
           <a href='/' style={{ color: '#ffffff', textDecoration: 'none' }}>
             <Typography className={classes.title} variant='h6' noWrap>
-            ShopEase
+              ShopEase
             </Typography>
           </a>
 
@@ -285,16 +301,18 @@ const MaterialAppBar = ({ history }) => {
               </IconButton>
             </Link>
 
-            <Link style={isActive(history, '/cart')} to='/cart'>
-              <IconButton aria-label='Cart' color='inherit'>
-                <Badge badgeContent={itemTotal()} color='secondary'>
-                  <ShoppingCartIcon />
-                </Badge>
-                <Typography noWrap>Cart</Typography>
-              </IconButton>
-            </Link>
+            {isAuthenticated() && role === 0 && role2 === 0 && (
+              <Link style={isActive(history, '/cart')} to='/cart'>
+                <IconButton aria-label='Cart' color='inherit'>
+                  <Badge badgeContent={itemTotal()} color='secondary'>
+                    <ShoppingCartIcon />
+                  </Badge>
+                  <Typography noWrap>Cart</Typography>
+                </IconButton>
+              </Link>
+            )}
 
-            {isAuthenticated() && isAuthenticated().user.role === 0 && (
+            {isAuthenticated() && isAuthenticated().user && isAuthenticated().user.role === 0 && (
               <Link
                 style={isActive(history, '/user/dashboard')}
                 to='/user/dashboard'
@@ -306,7 +324,7 @@ const MaterialAppBar = ({ history }) => {
               </Link>
             )}
 
-            {isAuthenticated() && isAuthenticated().user.role === 1 && (
+            {isAuthenticated() && isAuthenticated().user && isAuthenticated().user.role === 1 &&(
               <Link
                 style={isActive(history, '/admin/dashboard')}
                 to='/admin/dashboard'

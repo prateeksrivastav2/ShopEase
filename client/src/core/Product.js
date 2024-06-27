@@ -5,6 +5,7 @@ import Card from './Card';
 import ShowImage from './ShowImage';
 import { addItem, updateItem, removeItem } from './cartHelpers';
 import Button from '@material-ui/core/Button';
+import { isAuthenticated } from '../auth';
 const Product = (props) => {
   const [product, setProduct] = useState({});
   const [relatedProduct, setRelatedProduct] = useState([]);
@@ -12,12 +13,18 @@ const Product = (props) => {
   const [redirect, setRedirect] = useState(false);
 
   const showAddToCartBtn = (showAddToCartButton) => {
+
+    const {
+      user: { role, role2 },
+    } = isAuthenticated();
+
+
     return (
-      showAddToCartButton && (
-        <div style={{justifyContent:'center',textAlign:'center'}}>
-        <Button onClick={addToCart} variant='outlined' color='secondary' style={{width:'20vw'}}>
-          Add to cart
-        </Button>
+      showAddToCartButton &&role===0&&role2===0&& (
+        <div style={{ justifyContent: 'center', textAlign: 'center' }}>
+          <Button onClick={addToCart} variant='outlined' color='secondary' style={{ width: '20vw' }}>
+            Add to cart
+          </Button>
         </div>
       )
     );
@@ -78,6 +85,8 @@ const Product = (props) => {
           >
             {product.name}
           </h5>
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
           <ShowImage
             className="my-2"
             item={product}
@@ -85,59 +94,59 @@ const Product = (props) => {
             style={{ borderRadius: '5px' }}
           />
         </div>
-          <p
-            className="card-text my-2"
-            style={{
-              ...styles.heading,
-              fontSize: '1.3rem',
-              color: '#3ABEF9'
-            }}
-          >
-            <strong style={{ color: '#3572EF' }}>About: </strong>{product.description}
-          </p>
-          <p
-            className="card-text"
-            style={{
-              ...styles.heading,
-              fontSize: '1.3rem',
-              color: '#3ABEF9'
-            }}
-          >
-            <strong style={{ color: '#3572EF' }}>Price:</strong> ${product.price}
-          </p>
-          <p
-            className="card-text"
-            style={{
-              ...styles.heading,
-              fontSize: '1.3rem',
-              color: '#3ABEF9'
-            }}
-          >
-            <strong style={{ color: '#3572EF' }}>Category:</strong> {product.category.name}
-          </p>
-          <p
-            className="card-text"
-            style={{
-              ...styles.heading,
-              fontSize: '1.3rem',
-              color: '#3ABEF9'
-            }}
-          >
-            <strong style={{ color: '#3572EF' }}>Added on:</strong> {new Date(product.createdAt).toDateString()}
-          </p>
-          <p
-            className="card-text"
-            style={{
-              ...styles.heading,
-              fontSize: '1.3rem',
-              color: '#3ABEF9'
-            }}
-          >
-            <strong style={{ color: '#3572EF' }}>
-              {product.quantity > 0 ? 'In Stock' : 'Out of Stock'}
-            </strong>
-          </p>
-          {showAddToCartBtn(true)}
+        <p
+          className="card-text my-2"
+          style={{
+            ...styles.heading,
+            fontSize: '1.3rem',
+            color: '#3ABEF9'
+          }}
+        >
+          <strong style={{ color: '#3572EF' }}>About: </strong>{product.description}
+        </p>
+        <p
+          className="card-text"
+          style={{
+            ...styles.heading,
+            fontSize: '1.3rem',
+            color: '#3ABEF9'
+          }}
+        >
+          <strong style={{ color: '#3572EF' }}>Price:</strong> ${product.price}
+        </p>
+        <p
+          className="card-text"
+          style={{
+            ...styles.heading,
+            fontSize: '1.3rem',
+            color: '#3ABEF9'
+          }}
+        >
+          <strong style={{ color: '#3572EF' }}>Category:</strong> {product.category.name}
+        </p>
+        <p
+          className="card-text"
+          style={{
+            ...styles.heading,
+            fontSize: '1.3rem',
+            color: '#3ABEF9'
+          }}
+        >
+          <strong style={{ color: '#3572EF' }}>Added on:</strong> {new Date(product.createdAt).toDateString()}
+        </p>
+        <p
+          className="card-text"
+          style={{
+            ...styles.heading,
+            fontSize: '1.3rem',
+            color: '#3ABEF9'
+          }}
+        >
+          <strong style={{ color: '#3572EF' }}>
+            {product.quantity > 0 ? 'In Stock' : 'Out of Stock'}
+          </strong>
+        </p>
+        {showAddToCartBtn(true)}
       </div>
     );
   };
@@ -174,12 +183,12 @@ const Product = (props) => {
         </div>
         <div className='mb-2' style={{ display: 'flex', justifyContent: 'center', textAlign: 'center' }}>
           <h4 style={{ ...styles.heading, fontSize: '2.5rem' }}>Related products</h4>
-          {relatedProduct.map((p, i) => (
-            <div className='mb-3' key={i}>
-              <Card product={p} />
-            </div>
-          ))}
         </div>
+        {relatedProduct.map((p, i) => (
+          <div className='mb-3' key={i}>
+            <Card product={p} />
+          </div>
+        ))}
       </Layout>
     </>
   );

@@ -53,9 +53,9 @@ exports.signin = (req, res) => {
     );
     res.cookie('t', token, { expire: new Date() + 9999 });
     const { _id, name, email, role,role2 } = user;
-    console.log("role2");
-    console.log(role2);
-    console.log("role2");
+    // console.log("role2");
+    // console.log(role2);
+    // console.log("role2");
     return res.json({ token, user: { _id, email, name, role, role2 } });
   });
 };

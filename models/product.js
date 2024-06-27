@@ -3,6 +3,10 @@ const { ObjectId } = mongoose.Schema;
 
 const productSchema = new mongoose.Schema(
   {
+    Userid:{
+      type: String,
+      required: true,
+    },
     name: {
       type: String,
       trim: true,

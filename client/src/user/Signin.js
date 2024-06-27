@@ -5,8 +5,6 @@ import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
@@ -33,6 +31,16 @@ const useStyles = makeStyles((theme) => ({
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
+    transition: 'box-shadow 0.3s ease-in-out', // Add transition for smooth effect
+    '&:hover': {
+      boxShadow: '0px 4px 20px rgba(0, 0.3, 0.3, 0.3)', // Add shadow on hover
+    },
+  },
+  textField: {
+    transition: 'box-shadow 0.3s ease-in-out',
+    '&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
+      boxShadow: '0px 4px 20px rgba(0, 0.3, 0.3, 0.3)', // Add shadow on hover
+    },
   },
 }));
 
@@ -127,6 +135,7 @@ export default function Signin() {
             type='email'
             value={email}
             autoFocus
+            classes={{ root: classes.textField }}
           />
           <TextField
             variant='outlined'
@@ -140,10 +149,7 @@ export default function Signin() {
             onChange={handleChange('password')}
             value={password}
             autoComplete='current-password'
-          />
-          <FormControlLabel
-            control={<Checkbox value='remember' color='primary' />}
-            label='Remember me'
+            classes={{ root: classes.textField }}
           />
           <Button
             onClick={clickSubmit}
@@ -155,18 +161,18 @@ export default function Signin() {
           >
             Sign In
           </Button>
-          <Grid container>
-            <Grid item xs>
+          <div style={{display:'flex',justifyContent:'center'}}>
+            {/* <Grid item xs>
               <Link href='#' variant='body2'>
                 Forgot password?
               </Link>
-            </Grid>
+            </Grid> */}
             <Grid item>
               <Link to='/signup' variant='body2'>
                 {"Don't have an account? Sign Up"}
               </Link>
             </Grid>
-          </Grid>
+          </div>
         </form>
       </div>
     </Container>
@@ -174,8 +180,8 @@ export default function Signin() {
 
   return (
     <Layout
-      title='Signin page'
-      description='Signin to MERN E-commerce App'
+      title='Welcome Back!'
+      description='Signin To Your Existing Account'
       className='container col-md-8 offset-md-2'
     >
       {signInForm()}

@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useLayoutEffect, useState,useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import ShowImage from './ShowImage';
 import moment from 'moment';
-
+import { isAuthenticated } from '../auth';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import CameraIcon from '@material-ui/icons/PhotoCamera';
@@ -37,9 +37,18 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: theme.spacing(4),
   },
   card: {
-    height: '100%',
+    height: 'fit-content',
     display: 'flex',
     flexDirection: 'column',
+    boxShadow: '0 4px 8px rgba(0, 0.1, 0.1, 0.2)', // Add shadow
+    borderRadius: '15px', // Increase border radius
+    width: '27vw', // Increase width
+     // Set a maximum width for the card
+    margin: 0, // Center the card horizontally
+    transition: 'box-shadow 0.3s ease-in-out', // Add transition for smooth hover effect
+    '&:hover': {
+      boxShadow: '0 16px 16px rgba(0, 0.3, 0.3, 0.3)', // Increase shadow on hover
+    },
   },
   cardMedia: {
     paddingTop: '56.25%', // 16:9
@@ -48,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
   productDescription: {
-    height: '100px',
+    height: '20vw',
   },
   footer: {
     backgroundColor: theme.palette.background.paper,
@@ -80,8 +89,21 @@ const Card = ({
     );
   };
 
+  const [role, setRole] = useState(2);
+  const [role2, setRole2] = useState(2);
+
+  useEffect(() => {
+    const auth = isAuthenticated();
+    // console.log('Authentication:', auth); // Check what isAuthenticated() returns
+    if (auth) {
+      const { role, role2 } = auth;
+      // console.log('Role:', role, 'Role2:', role2); // Check role and role2 values
+      setRole(role);
+      setRole2(role2);
+    }
+  }, []);
+  
   const addToCart = () => {
-    // console.log('added');
     addItem(product, setRedirect(true));
   };
 
@@ -93,7 +115,7 @@ const Card = ({
 
   const showAddToCartBtn = (showAddToCartButton) => {
     return (
-      showAddToCartButton && (
+      showAddToCartButton &&role===0&&role2===0 &&(
         <Button onClick={addToCart} variant='outlined' color='secondary'>
           Add to cart
         </Button>
@@ -118,6 +140,7 @@ const Card = ({
   };
 
   const showCartUpdateOptions = (cartUpdate) => {
+
     return (
       cartUpdate && (
         <div className='mt-2'>
@@ -157,47 +180,32 @@ const Card = ({
   };
 
   const classes = useStyles();
+  const styles = {
+    heading: {
+      color: '#7469B6', 
+      textShadow: '2px 2px 5px rgba(0,0,0,0.3)', 
+      fontSize: '1.7rem', 
+      fontWeight: 'bold', 
+    },
+    
+  };
+
 
   return (
-    // <div className='card'>
-    //   <div className='card-header name'>{product.name}</div>
-    //   <div className='card-body'>
-    //     {shouldRedirect(redirect)}
-    //     <ShowImage item={product} url='product' />
-    //     <p className='lead mt-2'>{product.description.substring(0, 100)}</p>
-    //     <p className='black-10'>${product.price}</p>
-    //     <p className='black-9'>
-    //       Category: {product.category && product.category.name}
-    //     </p>
-    //     <p className='black-8'>
-    //       Added on {moment(product.createdAt).fromNow()}
-    //     </p>
-
-    //     {showStock(product.quantity)}
-    //     <br></br>
-
-    //     {showViewButton(showViewProductButton)}
-
-    //     {showAddToCartBtn(showAddToCartButton)}
-
-    //     {showRemoveButton(showRemoveProductButton)}
-
-    //     {showCartUpdateOptions(cartUpdate)}
-    //   </div>
-    // </div>
-
     <Container className={classes.cardGrid} maxWidth='md'>
       <CssBaseline />
-      <Grid container spacing={2}>
+      <Grid container spacing={2} justifyContent="center">
         <Grid item xs={12} sm={12} md={12}>
-          <CardM className={classes.card}>
+        <CardM className={`${classes.card} mx-5`}>
             {shouldRedirect(redirect)}
+            <div style={{display:'block',marginBottom:'0'}}>
             <ShowImage item={product} url='product' />
+            </div>
             <CardContent className={classes.cardContent}>
-              <Typography gutterBottom variant='h5' component='h2'>
+              <Typography gutterBottom variant='h5' component='h2' style={{...styles.heading,marginTop:'0px',marginBottom:'2px',padding:'0'}}>
                 {product.name}
               </Typography>
-              <Typography className={classes.productDescription}>{product.description.substring(0, 100)}</Typography>
+              <p style={{marginTop:'0px'}}>{product.description.substring(0, 100)}</p>
               <p className='black-10'>Price: ${product.price}</p>
               <p className='black-9'>
                 Category: {product.category && product.category.name}{' '}
@@ -206,10 +214,8 @@ const Card = ({
                 Added on {moment(product.createdAt).fromNow()}{' '}
               </p>
               <div className='my-2'>
-
-              {showStock(product.quantity)}
+                {showStock(product.quantity)}
               </div>
-              {/* <br></br> */}
               <span className='my-1'> 
                 {showViewButton(showViewProductButton)}
                 {showAddToCartBtn(showAddToCartButton)}

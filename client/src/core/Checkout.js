@@ -46,6 +46,7 @@ const Checkout = ({ products, setRun = (f) => f, run = undefined }) => {
       }
     });
   };
+  
 
   useEffect(() => {
     if (userId && token) {
@@ -96,8 +97,17 @@ const Checkout = ({ products, setRun = (f) => f, run = undefined }) => {
       setData((prevState) => ({ ...prevState, error: 'Could not update address' }));
     }
   };
+  const styles = {
+    heading: {
+      color: '#7469B6', 
+      textShadow: '2px 2px 5px rgba(0,0,0,0.3)', 
+      fontSize: '1.7rem', 
+      fontWeight: 'bold', 
+    },
+    
+  };
 
-  const getTotal = () => {
+  const  getTotal = () => {
     return products.reduce((currentValue, nextValue) => {
       return currentValue + nextValue.count * nextValue.price;
     }, 0);
@@ -176,10 +186,7 @@ const Checkout = ({ products, setRun = (f) => f, run = undefined }) => {
     // Iterate over each address in the Address array
     for (let index = 0; index < Address.length; index++) {
       const address = Address[index];
-  
-      // Check if the address object exists and has keys
       if (address && Object.keys(address).length !== 0) {
-        // Add JSX elements for the address to the array
         addressElements.push(
           <div key={index} className="address-container">
             <div onClick={() => handleAddressClick(index)} style={{ cursor: 'pointer' }}>
@@ -438,7 +445,7 @@ const Checkout = ({ products, setRun = (f) => f, run = undefined }) => {
 
   return (
     <div>
-      <h2>Total: ${getTotal()}</h2>
+      <h2 style={styles.heading}>Total: ${getTotal()}</h2>
       {showLoading(data.loading)}
       {showSuccess(data.success)}
       {showError(data.error)}

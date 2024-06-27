@@ -22,6 +22,7 @@ exports.read = (req, res) => {
   res.json(req.product);
 };
 
+
 exports.create = (req, res) => {
   const form = new formidable.IncomingForm();
   form.keepExtensions = true;
@@ -35,7 +36,15 @@ exports.create = (req, res) => {
       return res.status(400).json({ error: 'All fields are required' });
     }
 
-    let product = new Product(fields);
+    // Correcting the typo
+    const userId = req.params.userId;
+    console.log(userId);
+    if (!userId) {
+      return res.status(400).json({ error: 'User ID is required' });
+    }
+
+    // Adding user ID to the product fields
+    let product = new Product({ ...fields, Userid: userId });
 
     if (files.photo) {
       if (files.photo.size > 1000000) {
@@ -52,9 +61,7 @@ exports.create = (req, res) => {
       res.status(400).json({ error: errorHandler(err) });
     }
   });
-};
-
-exports.remove = async (req, res) => {
+};exports.remove = async (req, res) => {
   try {
     let product = req.product;
     await product.remove();

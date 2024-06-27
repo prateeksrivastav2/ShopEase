@@ -8,35 +8,43 @@ const AdminDashboard = () => {
     user: { _id, name, email, role,role2 },
   } = isAuthenticated();
   // console.log(role2);
-
+  const styles = {
+    heading: {
+      color: '#7469B6', 
+      textShadow: '2px 2px 5px rgba(0,0,0,0.3)', 
+      fontSize: '1.7rem', 
+      fontWeight: 'bold', 
+    },
+   
+  };
   const adminLinks = () => {
     return (
       <div className='card'>
-        {role2==1&&<h4 className='card-header'>Admin Controls</h4>}
-        {role2==0&&<h4 className='card-header'>Seller Controls</h4>}
+        {role2==1&&<h4 className='card-header' style={styles.heading}>Admin Controls</h4>}
+        {role2==0&&<h4 className='card-header'style={styles.heading}>Seller Controls</h4>}
         <ul className='list-group'>
          { role2==1&&<li className='list-group-item'>
-            <Link className='nav-link' to='/admin/categories'>
+            <Link className='nav-link' to='/admin/categories'style={{...styles.heading,color:'#3ABEF9',fontSize:'1.2rem'}}>
               Category List
             </Link>
           </li>}
          { role2==1&&<li className='list-group-item'>
-            <Link className='nav-link' to='/create/category'>
+            <Link className='nav-link' to='/create/category'style={{...styles.heading,color:'#3ABEF9',fontSize:'1.2rem'}}>
               Add Category
             </Link>
           </li>}
           <li className='list-group-item'>
-            <Link className='nav-link' to='/create/product'>
+            <Link className='nav-link' to='/create/product'style={{...styles.heading,color:'#3ABEF9',fontSize:'1.2rem'}}>
               Add Product
             </Link>
           </li>
           <li className='list-group-item'>
-            <Link className='nav-link' to='/admin/orders'>
+            <Link className='nav-link' to='/admin/orders'style={{...styles.heading,color:'#3ABEF9',fontSize:'1.2rem'}}>
               View Orders
             </Link>
           </li>
           <li className='list-group-item'>
-            <Link className='nav-link' to='/admin/products'>
+            <Link className='nav-link' to='/admin/products'style={{...styles.heading,color:'#3ABEF9',fontSize:'1.2rem'}}>
               Manage Products
             </Link>
           </li>
@@ -48,11 +56,11 @@ const AdminDashboard = () => {
   const adminInfo = () => {
     return (
       <div className='card mb-5'>
-        <h3 className='card-header'>User information</h3>
+        <h3 className='card-header' style={{...styles.heading,fontSize:'2rem'}}>User information</h3>
         <ul className='list-group'>
-          <li className='list-group-item'>{name}</li>
-          <li className='list-group-item'>{email}</li>
-          <li className='list-group-item'>
+          <li className='list-group-item'style={{...styles.heading,color:'#B1AFFF',fontSize:'1.3rem'}}>{name}</li>
+          <li className='list-group-item'style={{...styles.heading,color:'#B1AFFF',fontSize:'1.3rem'}}>{email}</li>
+          <li className='list-group-item'style={{...styles.heading,color:'#B1AFFF',fontSize:'1.3rem'}}>
             {role === 1 && role2==1&& 'Admin'}
             {role === 1 && role2==0&& 'Seller'}
             {role === 0 && role2==0&& 'Registered-User'}

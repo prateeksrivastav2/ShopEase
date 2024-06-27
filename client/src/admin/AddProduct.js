@@ -188,6 +188,12 @@ const AddProduct = () => {
         <h2>Loading...</h2>
       </div>
     );
+    // useEffect(() => {
+      
+    // console.log(user._id);
+     
+    // }, )
+    
 
   return (
     <Layout
