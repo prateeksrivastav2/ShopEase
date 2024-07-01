@@ -1,20 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../core/Layout';
 import { isAuthenticated } from '../auth';
-import { listOrders, getStatusValues, updateOrderStatus } from './apiAdmin';
+import { listOrders, getStatusValues, updateOrderStatus, getProducts } from './apiAdmin';
 import moment from 'moment';
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
+  const [orders2, setOrders2] = useState([]);
   const [statusValues, setStatusValues] = useState([]);
   const { user, token } = isAuthenticated();
+  const [Products, setProducts] = React.useState([]);
 
+  const loadProducts = () => {
+    getProducts().then((data) => {
+      if (data.error) {
+        console.log(data.error);
+      } else {
+        setProducts(data);
+      }
+    });
+  };
   const loadOrders = () => {
     listOrders(user._id, token).then((data) => {
       if (data.error) {
         console.log(data.error);
       } else {
-        setOrders(data);
+        setOrders2(data);
       }
     });
   };
@@ -32,10 +43,29 @@ const Orders = () => {
   useEffect(() => {
     loadOrders();
     loadStatusValues();
+    loadProducts();
+
   }, []);
+  useEffect(() => {
+    if (orders2.length > 0 && Products.length > 0) {
+      const updatedOrders = orders2.reduce((acc, order) => {
+        const id = order.products[0]._id;
+        const product = Products.find(product => product._id === id);
+        if (product && product.Userid === user._id) {
+          acc.push(order);
+          // console.log(order);
+        }
+        return acc;
+      }, []);
+
+      setOrders(updatedOrders);
+    }
+  }, [Products]);
 
   const showOrdersLength = () => {
-    if (orders.length > 0) {
+    if (Array.isArray(orders) && orders.length > 0) {
+      // console.log(orders);
+      // console.log("orders")
       return (
         <h1 className='text-danger display-2'>Total orders: {orders.length}</h1>
       );
@@ -61,7 +91,6 @@ const Orders = () => {
         loadOrders();
       }
     });
-    // console.log('update order status');
   };
 
   const showStatus = (o) => (
@@ -90,7 +119,7 @@ const Orders = () => {
         <div className='col-md-8 offset-md-2'>
           {showOrdersLength()}
 
-          {orders.map((o, oIndex) => {
+          {orders && Array.isArray(orders) && orders.map((o, oIndex) => {
             return (
               <div
                 className='mt-5'
@@ -107,13 +136,14 @@ const Orders = () => {
                     Transaction ID: {o.transaction_id}
                   </li>
                   <li className='list-group-item'>Amount: ${o.amount}</li>
-                  <li className='list-group-item'>Ordered by: {o.user.name}</li>
+                  <li className='list-group-item'>Ordered by: {o.userId}</li>
                   <li className='list-group-item'>
                     Ordered on: {moment(o.createdAt).fromNow()}
                   </li>
-                  <li className='list-group-item'>
-                    Delivery address: {o.address}
+                  <li className="list-group-item">
+                    Delivery address:  {o.addresses[0].street}, {o.addresses[0].city}, {o.addresses[0].postalCode} {o.addresses[0].state}
                   </li>
+
                 </ul>
 
                 <h3 className='mt-4 mb-4 font-italic'>

@@ -102,7 +102,7 @@ exports.update = (req, res) => {
 exports.list = async (req, res) => {
   const order = req.query.order || 'asc';
   const sortBy = req.query.sortBy || '_id';
-  const limit = parseInt(req.query.limit) || 6;
+  const limit = parseInt(req.query.limit) || 100000;
 
   try {
     const products = await Product.find()

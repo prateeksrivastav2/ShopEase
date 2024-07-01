@@ -10,6 +10,16 @@ const AddCategory = () => {
   const [success, setSuccess] = useState(false);
 
   // destructure user and token from localstorage
+  const styles = {
+    heading: {
+      color: '#7469B6',
+      textShadow: '2px 2px 5px rgba(0,0,0,0.3)',
+      fontSize: '1.7rem',
+      fontWeight: 'bold',
+    },
+
+  };
+
   const { user, token } = isAuthenticated();
 
   const handleChange = (e) => {
@@ -32,10 +42,11 @@ const AddCategory = () => {
     });
   };
 
+
   const newCategoryForm = () => (
     <form onSubmit={clickSubmit}>
       <div className='form-group'>
-        <label className='text-muted'>Name</label>
+        <label className='lk' style={{...styles.heading}}>Category Name</label>
         <input
           type='text'
           className='form-control'

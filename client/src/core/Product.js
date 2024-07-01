@@ -20,7 +20,7 @@ const Product = (props) => {
 
 
     return (
-      showAddToCartButton &&role===0&&role2===0&& (
+      showAddToCartButton && role === 0 && role2 === 0 && (
         <div style={{ justifyContent: 'center', textAlign: 'center' }}>
           <Button onClick={addToCart} variant='outlined' color='secondary' style={{ width: '20vw' }}>
             Add to cart
@@ -94,16 +94,11 @@ const Product = (props) => {
             style={{ borderRadius: '5px' }}
           />
         </div>
-        <p
-          className="card-text my-2"
-          style={{
-            ...styles.heading,
-            fontSize: '1.3rem',
-            color: '#3ABEF9'
-          }}
-        >
+        <p className="card-text my-2" style={{ ...styles.heading, fontSize: '1.3rem', color: '#3ABEF9', whiteSpace: 'pre-line' }}>
           <strong style={{ color: '#3572EF' }}>About: </strong>{product.description}
         </p>
+
+
         <p
           className="card-text"
           style={{
@@ -184,11 +179,18 @@ const Product = (props) => {
         <div className='mb-2' style={{ display: 'flex', justifyContent: 'center', textAlign: 'center' }}>
           <h4 style={{ ...styles.heading, fontSize: '2.5rem' }}>Related products</h4>
         </div>
-        {relatedProduct.map((p, i) => (
+        {/* {relatedProduct.map((p, i) => (
           <div className='mb-3' key={i}>
             <Card product={p} />
           </div>
-        ))}
+        ))} */}
+        <div className='row'>
+          {relatedProduct.map((product, i) => (
+            <div key={i} className='col-xl-4 col-lg-6 col-md-6 col-sm-12'>
+              <Card product={product} />
+            </div>
+          ))}
+        </div>
       </Layout>
     </>
   );

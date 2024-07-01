@@ -55,7 +55,10 @@ const OrderSchema = new mongoose.Schema(
       ], // enum means string objects
     },
     updated: Date,
-    user: { type: ObjectId, ref: 'User' },
+    userId: {
+      type: String,
+      required: true,
+    },
   },
   { timestamps: true }
 );

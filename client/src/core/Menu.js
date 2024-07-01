@@ -106,7 +106,7 @@ const MaterialAppBar = ({ history }) => {
     const auth = isAuthenticated();
     // console.log('Authentication:', auth); // Check what isAuthenticated() returns
     if (auth) {
-      const { role, role2 } = auth;
+      const { role, role2 } = auth.user;
       // console.log('Role:', role, 'Role2:', role2); // Check role and role2 values
       setRole(role);
       setRole2(role2);

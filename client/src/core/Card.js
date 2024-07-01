@@ -89,17 +89,18 @@ const Card = ({
     );
   };
 
-  const [role, setRole] = useState(2);
-  const [role2, setRole2] = useState(2);
+  const [rolee, setrolee] = useState(2);
+  const [rolee2, setrolee2] = useState(2);
 
   useEffect(() => {
     const auth = isAuthenticated();
-    // console.log('Authentication:', auth); // Check what isAuthenticated() returns
+    // console.log('Authentication:', auth); 
     if (auth) {
-      const { role, role2 } = auth;
-      // console.log('Role:', role, 'Role2:', role2); // Check role and role2 values
-      setRole(role);
-      setRole2(role2);
+      const { role, role2 } = auth.user;
+      // console.log('rolee:', role, 'rolee2:', role2); 
+      setrolee(role);
+      setrolee2(role2);
+      
     }
   }, []);
   
@@ -115,7 +116,7 @@ const Card = ({
 
   const showAddToCartBtn = (showAddToCartButton) => {
     return (
-      showAddToCartButton &&role===0&&role2===0 &&(
+      showAddToCartButton &&rolee===0&&rolee2===0 &&(
         <Button onClick={addToCart} variant='outlined' color='secondary'>
           Add to cart
         </Button>

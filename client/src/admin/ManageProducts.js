@@ -51,6 +51,7 @@ const ManageProducts = () => {
         console.log(data.error);
       } else {
         const id=user._id;
+        // console.log(data);
         const filteredProducts = data.filter(product => product.Userid === id);
         setProducts(filteredProducts);
       }
@@ -74,7 +75,7 @@ const ManageProducts = () => {
   return (
     <Layout
       title='Manage Products'
-      description='Perform CRUD on products'
+      description='Keep Your Products Updated'
       className='container-fluid'
     >
       <div className='row'>

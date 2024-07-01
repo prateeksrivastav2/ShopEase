@@ -16,8 +16,16 @@ exports.orderById = async (req, res, next, id) => {
 };
 
 exports.create = async (req, res) => {
-  req.body.order.user = req.profile;
-  const order = new Order(req.body.order);
+  console.log("req.body.user");
+  const id=req.params.userId;
+  console.log(id);
+  const orderData = {
+    ...req.body.order,
+    userId:id,
+    addresses:req.body.order.address || [], 
+  };
+  const order = new Order(orderData);
+
   try {
     const data = await order.save();
     res.json(data);
@@ -25,6 +33,7 @@ exports.create = async (req, res) => {
     res.status(400).json({ error: errorHandler(error) });
   }
 };
+
 
 exports.listOrders = async (req, res) => {
   try {
